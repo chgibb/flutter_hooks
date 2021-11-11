@@ -241,6 +241,17 @@ abstract class HookState<R, T extends Hook<R>> with Diagnosticable {
   /// Equivalent of [State.deactivate] for [HookState]
   void deactivate() {}
 
+  /// {@macro flutter.widgets.didChangeDependencies}
+  ///
+  /// The [dependOnInheritedWidgetOfExactType] registers this element as depending on
+  /// inherited information of the given type. When the information of that type
+  /// changes at this location in the tree (e.g., because the [InheritedElement]
+  /// updated to a new [InheritedWidget] and
+  /// [InheritedWidget.updateShouldNotify] returned true), the framework calls
+  /// this function to notify this element of the change.
+  @protected
+  void didChangeDependencies() {}
+
   /// {@macro flutter.widgets.reassemble}
   ///
   /// In addition to this method being invoked, it is guaranteed that the
@@ -382,6 +393,9 @@ mixin HookElement on ComponentElement {
   void didChangeDependencies() {
     _isOptionalRebuild = false;
     super.didChangeDependencies();
+    for (final hook in _hooks) {
+      hook.value.didChangeDependencies();
+    }
   }
 
   @override
